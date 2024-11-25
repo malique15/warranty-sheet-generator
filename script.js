@@ -96,46 +96,89 @@ function addMachineRow() {
   const machineForms = document.getElementById("machineForms");
   const newRow = document.createElement("div");
   newRow.classList.add("warranty-form-row");
+
+  //custom card
+  //document.getElementById("machineForms").appendChild("warranty-form-row");
+
   newRow.innerHTML = `
-    <label for="brand">Brand:</label>
-    <select class="brand">
-      <option value="" selected disabled>Select Brand</option>
-      <option value="Fixtec">Fixtec</option>
-      <option value="Stihl">Stihl</option>
-      <option value="DeWalt">DeWalt</option>
-      <option value="Rigid">Rigid</option>
-      <option value="Echo">Echo</option>
-    </select>
-    <label for="warrantyPeriod">Warranty Period:</label>
-    <select class="warrantyPeriod">
-      <option value="" selected disabled>Select Period</option>
-      <option value="3 Months">3 Months</option>
-      <option value="7 Months">7 Months</option>
-      <option value="1 Year">1 Year</option>
-    </select>
-    <label for="model">Machine Model:</label>
-    <input type="text" class="model" placeholder="Enter Model" required>
-    <label for="serialNumber">Serial Number:</label>
-    <input type="text" class="serialNumber" placeholder="Enter Serial Number" required>
-    <label for="armature">Armature:</label>
-    <select class="armature">
-      <option value="" selected disabled>Select Option</option>
-      <option value="YES">YES</option>
-      <option value="NO">NO</option>
-    </select>
-    <label for="twoCycle">2 Stroke Engine:</label>
-    <select class="twoCycle" onchange="toggleMachineType(this)">
-      <option value="" selected disabled>Select Option</option>
-      <option value="YES">YES</option>
-      <option value="NO">NO</option>
-    </select>
-    <label for="machineType" style="display: none;">Machine Type:</label>
-    <select class="machineType" style="display: none;">
-      <option value="" selected disabled>Select Type</option>
-      <option value="Brush Cutter">Brush Cutter</option>
-      <option value="Chainsaw">Chainsaw</option>
-    </select>
-    <button type="button" onclick="removeRow(this)">Remove</button>`;
+  <div style="margin-top: 20px;" id="machineForms">
+          <div class="warranty-form-row">
+
+            <div class="row-1">
+
+              <div class="brandCont">
+                <label for="brand">Brand:</label>
+                <div class="customSelect">
+                  <select class="brand">
+                    <option value="" selected disabled>Select Brand</option>
+                    <option value="Fixtec">Fixtec</option>
+                    <option value="Stihl">Stihl</option>
+                    <option value="DeWalt">DeWalt</option>
+                    <option value="Rigid">Rigid</option>
+                    <option value="Echo">Echo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="warrantyCont">
+                <label for="warrantyPeriod">Warranty:</label>
+                <div class="customSelect">
+                  <select class="warrantyPeriod">
+                    <option value="" selected disabled>Select Period</option>
+                    <option value="3 Months">3 Months</option>
+                    <option value="7 Months">7 Months</option>
+                    <option value="1 Year">1 Year</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="modelCont">
+                <label for="model">Model:</label>
+                <input type="text" class="model" placeholder="Enter Model" required>
+              </div>
+
+              <div class="serialCont">
+                <label for="serialNumber">Serial Num:</label>
+                <input type="text" class="serialNumber" placeholder="Enter Serial Number" required>
+              </div>
+
+
+            </div>
+
+
+
+
+            <label for="armature">Armature:</label>
+            <div class="customSelect">
+              <select class="armature">
+                <option value="" selected disabled>Select Option</option>
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+
+
+            <label for="twoCycle">2-Stroke:</label>
+            <div class="customSelect">
+              <select class="twoCycle">
+                <option value="" selected disabled>Select Option</option>
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+
+
+            <label style="display: none;" for="machineType">Machine Type:</label>
+            <select style="display: none;" class="machineType">
+              <option value="" selected disabled>Select Type</option>
+              <option value="Brush Cutter">Brush Cutter</option>
+              <option value="Chainsaw">Chainsaw</option>
+            </select>
+
+            <!-- Remove button -->
+            <button type="button" onclick="removeRow(this)">Remove</button>
+          </div>
+        </div>`;
   machineForms.appendChild(newRow);
 }
 
