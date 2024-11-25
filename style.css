@@ -6,20 +6,116 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: #f4f4f4;
-}
-
-.container {
-  width: 300px;
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #F4F3F2;
 }
 
 h1 {
-  text-align: center;
+  text-align: left;
   color: #333;
+  display: block;
 }
+
+.warrantyForm {
+  width: 90vw;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.custLabel {
+  display: flex;
+}
+
+label {
+  text-transform: uppercase;
+  margin-right: 10px;
+}
+
+input {
+  background-color: #F4F3F2;
+  border: none;
+}
+
+
+
+
+.row-1 {
+  display: flex;
+  flex: 25%;
+  gap: 47px;
+  margin-top: 36px;
+  align-items: baseline;
+}
+
+.row-1 input {
+  background-color: #F4F3F2;
+  border: none;
+}
+
+.customSelect {
+  display: inline;
+  position: relative;
+}
+
+.customSelect select {
+  appearance: none;
+
+  background-color: #F4F3F2;
+  border: none;
+  font-size: 16px;
+  padding: 5px 30px;
+  border-radius: 0.25rem;
+  color: #000;
+  cursor: pointer;
+}
+
+
+.customSelect::before,
+.customSelect::after {
+  position: absolute;
+  content: "";
+  right: 1rem;
+  pointer-events: none;
+}
+
+.customSelect::before {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid black;
+  top: 40%;
+}
+
+.customSelect::after {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid black;
+  top: 55%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 form {
   display: flex;
