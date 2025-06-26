@@ -94,109 +94,95 @@ function generatePrintPreview() {
 
 function addMachineRow() {
   const machineForms = document.getElementById("machineForms");
+
   const newRow = document.createElement("div");
   newRow.classList.add("warranty-form-row");
 
-  //custom card
-  //document.getElementById("machineForms").appendChild("warranty-form-row");
 
   newRow.innerHTML = `
-  <div style="margin-top: 20px;" id="machineForms">
-          <div class="warranty-form-row">
+    <!-- Do not use 'id="machineForms"' again; using class to avoid ID duplication -->
+    <div class="row-1">
+      <div class="brandCont">
+        <label>Brand:</label>
+        <div class="customSelect">
+          <select class="brand">
+            <option value="" selected disabled>Select Brand</option>
+            <option value="Fixtec">Fixtec</option>
+            <option value="Stihl">Stihl</option>
+            <option value="DeWalt">DeWalt</option>
+            <option value="Rigid">Rigid</option>
+            <option value="Echo">Echo</option>
+          </select>
+        </div>
+      </div>
+      <div class="warrantyCont">
+        <label>Warranty:</label>
+        <div class="customSelect">
+          <select class="warrantyPeriod">
+            <option value="" selected disabled>Select Period</option>
+            <option value="3 Months">3 Months</option>
+            <option value="7 Months">7 Months</option>
+            <option value="1 Year">1 Year</option>
+          </select>
+        </div>
+      </div>
+      <div class="modelCont">
+        <label>Model:</label>
+        <input type="text" class="model" placeholder="Enter Model" required>
+      </div>
+      <div class="serialCont">
+        <label>Serial Num:</label>
+        <input type="text" class="serialNumber" placeholder="Enter Serial Number" required>
+      </div>
+    </div>
 
-            <div class="row-1">
+    <label>Armature:</label>
+    <div class="customSelect">
+      <select class="armature">
+        <option value="" selected disabled>Select Option</option>
+        <option value="YES">YES</option>
+        <option value="NO">NO</option>
+      </select>
+    </div>
 
-              <div class="brandCont">
-                <label for="brand">Brand:</label>
-                <div class="customSelect">
-                  <select class="brand">
-                    <option value="" selected disabled>Select Brand</option>
-                    <option value="Fixtec">Fixtec</option>
-                    <option value="Stihl">Stihl</option>
-                    <option value="DeWalt">DeWalt</option>
-                    <option value="Rigid">Rigid</option>
-                    <option value="Echo">Echo</option>
-                  </select>
-                </div>
-              </div>
+    <label>2-Stroke:</label>
+    <div class="customSelect">
+      <select class="twoCycle" onchange="toggleMachineType(this)">
+        <option value="" selected disabled>Select Option</option>
+        <option value="YES">YES</option>
+        <option value="NO">NO</option>
+      </select>
+    </div>
 
-              <div class="warrantyCont">
-                <label for="warrantyPeriod">Warranty:</label>
-                <div class="customSelect">
-                  <select class="warrantyPeriod">
-                    <option value="" selected disabled>Select Period</option>
-                    <option value="3 Months">3 Months</option>
-                    <option value="7 Months">7 Months</option>
-                    <option value="1 Year">1 Year</option>
-                  </select>
-                </div>
-              </div>
+    <label style="display: none;">Machine Type:</label>
+    <select style="display: none;" class="machineType">
+      <option value="" selected disabled>Select Type</option>
+      <option value="Brush Cutter">Brush Cutter</option>
+      <option value="Chainsaw">Chainsaw</option>
+    </select>
 
-              <div class="modelCont">
-                <label for="model">Model:</label>
-                <input type="text" class="model" placeholder="Enter Model" required>
-              </div>
+    <button type="button" onclick="removeRow(this)">Remove</button>
+  `;
 
-              <div class="serialCont">
-                <label for="serialNumber">Serial Num:</label>
-                <input type="text" class="serialNumber" placeholder="Enter Serial Number" required>
-              </div>
-
-
-            </div>
-
-
-
-
-            <label for="armature">Armature:</label>
-            <div class="customSelect">
-              <select class="armature">
-                <option value="" selected disabled>Select Option</option>
-                <option value="YES">YES</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-
-
-            <label for="twoCycle">2-Stroke:</label>
-            <div class="customSelect">
-              <select class="twoCycle">
-                <option value="" selected disabled>Select Option</option>
-                <option value="YES">YES</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
-
-
-            <label style="display: none;" for="machineType">Machine Type:</label>
-            <select style="display: none;" class="machineType">
-              <option value="" selected disabled>Select Type</option>
-              <option value="Brush Cutter">Brush Cutter</option>
-              <option value="Chainsaw">Chainsaw</option>
-            </select>
-
-            <!-- Remove button -->
-            <button type="button" onclick="removeRow(this)">Remove</button>
-          </div>
-        </div>`;
   machineForms.appendChild(newRow);
 }
 
-function toggleMachineType(selectElement) {
-  const row = selectElement.parentNode;
-  const twoCycle = row.querySelector(".twoCycle");
-  const machineTypeLabel = row.querySelector("label[for='machineType']");
-  const machineTypeDropdown = row.querySelector(".machineType");
 
-  if (twoCycle.value === "YES") {
-    machineTypeLabel.style.display = "inline";
-    machineTypeDropdown.style.display = "inline";
+function toggleMachineType(selectElement) {
+  const row = selectElement.closest(".warranty-form-row");
+  const machineTypeLabel = row.querySelector("label[for='machineType']") || row.querySelector("label + select.machineType").previousElementSibling;
+  const machineTypeSelect = row.querySelector(".machineType");
+
+  if (selectElement.value === "YES") {
+    machineTypeSelect.style.display = "inline-block";
+    machineTypeLabel.style.display = "inline-block";
   } else {
+    machineTypeSelect.style.display = "none";
     machineTypeLabel.style.display = "none";
-    machineTypeDropdown.style.display = "none";
-    machineTypeDropdown.value = ""; // Reset machine type if hidden
+    machineTypeSelect.value = "";
   }
 }
+
 
 function removeRow(button) {
   const row = button.parentNode;
