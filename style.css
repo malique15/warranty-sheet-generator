@@ -71,9 +71,13 @@ input {
   border: none;
 }
 
+.row-1 select {
+  width: 100%;
+}
+
 .customSelect {
-  display: inline;
-  position: relative;
+  display: inline-flex;
+  width: 200px;
 }
 
 .customSelect select {
