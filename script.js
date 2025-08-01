@@ -1,3 +1,95 @@
+
+
+// ----------------- AUTH & SESSION ------------------
+let token = localStorage.getItem('token');
+
+function handleLogin() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  fetch('http://localhost:5000/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('warrantySection').style.display = 'block';
+        token = data.token;
+      } else {
+        document.getElementById('loginStatus').innerText = 'Login failed';
+      }
+    })
+    .catch(err => console.error(err));
+}
+
+function logoutUser() {
+  localStorage.removeItem('token');
+  document.getElementById('loginContainer').style.display = 'block';
+  document.getElementById('warrantySection').style.display = 'none';
+}
+
+window.onload = () => {
+  if (token) {
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('warrantySection').style.display = 'block';
+  }
+};
+
+// --------------- WARRANTY SHEET FUNCTIONS ------------------
+
+function addMachineRow() {
+  const formRow = document.querySelector('.warranty-form-row');
+  const newRow = formRow.cloneNode(true);
+  newRow.querySelectorAll('input').forEach(input => input.value = '');
+  newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+  document.getElementById('machineForms').appendChild(newRow);
+}
+
+function removeRow(button) {
+  const row = button.closest('.warranty-form-row');
+  const container = document.getElementById('machineForms');
+  if (container.children.length > 1) {
+    row.remove();
+  }
+}
+
+function toggleMachineType(select) {
+  const machineTypeSelect = select.parentElement.nextElementSibling.nextElementSibling;
+  const label = machineTypeSelect.previousElementSibling;
+  if (select.value === 'YES') {
+    machineTypeSelect.style.display = 'inline-block';
+    label.style.display = 'inline-block';
+  } else {
+    machineTypeSelect.style.display = 'none';
+    label.style.display = 'none';
+    machineTypeSelect.selectedIndex = 0;
+  }
+}
+
+function generatePrintPreview() {
+  alert('Print preview logic to be implemented');
+  // Add code here for jsPDF if needed
+}
+
+function resetForm() {
+  document.getElementById('warrantyForm').reset();
+  const container = document.getElementById('machineForms');
+  while (container.children.length > 1) {
+    container.removeChild(container.lastChild);
+  }
+}
+
+
+
+
+
+
+
+/*
 function generatePrintPreview() {
   const custName = document.getElementById("custName").value;
   const rows = document.querySelectorAll(".warranty-form-row");
@@ -235,3 +327,4 @@ function resetForm() {
       <button type="button" onclick="removeRow(this)">Remove</button>
     </div>`;
 }
+*/
