@@ -7,8 +7,8 @@ mongodb+srv://maliquemullings15:TGctnP5cUNP1fhq1@cluster0.fue6zbf.mongodb.net/
 
 
 
-
-
+fetch('http://localhost:5000/api/auth/login', {
+fetch('http://localhost:5000/api/login', {
 
 
 

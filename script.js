@@ -7,7 +7,7 @@ function handleLogin() {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
-  fetch('http://localhost:5000/api/login', {
+  fetch('http://localhost:5000/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
@@ -25,6 +25,31 @@ function handleLogin() {
     })
     .catch(err => console.error(err));
 }
+
+async function handleRegister() {
+  const username = document.getElementById('registerUsername').value;
+  const password = document.getElementById('registerPassword').value;
+  const location = document.getElementById('registerLocation').value;
+
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, location })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert("✅ Registered successfully! Now log in.");
+    } else {
+      alert("❌ Registration failed: " + data.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Error during registration");
+  }
+}
+
 
 function logoutUser() {
   localStorage.removeItem('token');
