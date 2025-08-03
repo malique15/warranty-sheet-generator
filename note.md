@@ -1,3 +1,27 @@
+mongodb+srv://admin:<admin>@malique15.jmxl48d.mongodb.net/?retryWrites=true&w=majority&appName=malique15
+
+TGctnP5cUNP1fhq1
+
+mongodb+srv://maliquemullings15:TGctnP5cUNP1fhq1@cluster0.fue6zbf.mongodb.net/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 warranty line 1  "This limited warranty last for (warrantyPeriod) which begins on the (day) of (month), (year)."
 
 For two cycle machines we recommend 150ml 2 cycle oil per gallon of 90 gasoline, therefore, the recommended oils (stihl, echo, poulan) should be used in all machines. If this instruction is not followed then your warranty will be void.
