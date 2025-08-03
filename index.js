@@ -15,7 +15,7 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
 const warrantyRoutes = require('./routes/warranty');
-app.use('api/warranty', warrantyRoutes);
+app.use('/api/warranty', warrantyRoutes);
 
 
 // MongoDB connection

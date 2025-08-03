@@ -1,30 +1,47 @@
 const express = require('express');
 const Warranty = require('../models/warranty');
-const auth = require('../middleware/auth');
+const verifyToken = require('../middleware/auth');
 const router = express.Router();
 
-router.post('/create', auth, async (req, res) => {
-  const warranty = new Warranty({
-    ...req.body,
-    createdBy: req.user.username,
-    location: req.user.location,
-  });
-  await warranty.save();
-  res.send("Warranty saved");
+// Save warranty
+router.post('/create', verifyToken, async (req, res) => {
+  try {
+    const newWarranty = new Warranty({
+      customerName: req.body.customerName,
+      machines: req.body.machines,
+      location: req.user.location,
+      createdAt: new Date()
+    });
+
+    await newWarranty.save();
+    res.json({ msg: 'Warranty saved successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error saving warranty' });
+  }
 });
 
-router.get('/search', auth, async (req, res) => {
-  const { date } = req.query;
-  const start = new Date(date);
-  const end = new Date(start);
-  end.setDate(start.getDate() + 7); // for weekly range
+// Search warranty by date
+router.get('/search', verifyToken, async (req, res) => {
+  try {
+    const date = new Date(req.query.date);
+    if (isNaN(date)) return res.status(400).json({ msg: "Invalid date" });
 
-  const warranties = await Warranty.find({
-    location: req.user.location,
-    createdAt: { $gte: start, $lt: end }
-  });
+    const weekStart = new Date(date);
+    weekStart.setDate(date.getDate() - date.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 7);
 
-  res.json(warranties);
+    const results = await Warranty.find({
+      location: req.user.location,
+      createdAt: { $gte: weekStart, $lt: weekEnd }
+    });
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Search failed' });
+  }
 });
 
 module.exports = router;

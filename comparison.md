@@ -1,105 +1,162 @@
-router.post('/register', async (req, res) => {
-  const { username, password, location } = req.body;
+<!DOCTYPE html>
+<html lang="en">
 
-  if (!username || !password || !location) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warranty Sheet Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-  const existingUser = await User.findOne({ username });
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
-  }
+<body>
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ username, password: hashedPassword, location });
-
-  try {
-    await user.save();
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+  <div class="container">
+    <h1>Warranty Sheet</h1>
 
 
-app.use('/api/auth', require('./routes/auth'));
+    <!-- <h2>Register (Test Only)</h2>
+    <form id="registerForm">
+      <input type="text" id="registerUsername" placeholder="Username" required>
+      <input type="password" id="registerPassword" placeholder="Password" required>
+      <input type="text" id="registerLocation" placeholder="Location" required>
+      <button type="button" onclick="handleRegister()">Register</button>
+    </form> -->
 
 
-
-
-
-
-
-
-
+    <!-- Login Section -->
+    <div id="loginContainer">
+      <h2>Employee Login</h2>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button onclick="handleLogin()">Login</button>
+      <p id="loginStatus"></p>
+    </div>
 
 
 
+    <!-- Warranty Section: Hidden by default until login -->
+    <div id="warrantySection" style="display: none;">
+
+      <!-- might move 3 -->
+      <label>Select date to search warranty:</label>
+      <input type="date" id="searchDate">
+      <button onclick="searchWarrantiesByDate()">Search</button>
+
+      <div id="searchWarranty">
+        <h2>Search Warranty by Date</h2>
+        <input type="date" id="searchDate" />
+        <button onclick="searchWarranty()">Search</button>
+        <table id="warrantyResults" border="1" style=" margin-top: 20px; width: 100%;">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Serial</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
 
 
+      <div class="warrantyForm">
+        <!-- Customer Name entered only once -->
+        <form id="warrantyForm">
+          <div class="custLabel">
+            <label for="custName">Name:</label>
+            <input class="custName" type="text" id="custName" required>
+          </div>
 
+          <!-- Machine rows container -->
+          <div id="machineForms">
+            <div id="warranty-form-row" class="warranty-form-row">
 
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+              <div class="row-1">
 
-const app = express();
+                <div class="brandCont">
+                  <label for="brand">Brand:</label>
+                  <div class="customSelect">
+                    <select class="brand">
+                      <option value="" selected disabled>Select Brand</option>
+                      <option value="Fixtec">Fixtec</option>
+                      <option value="Stihl">Stihl</option>
+                      <option value="DeWalt">DeWalt</option>
+                      <option value="Rigid">Rigid</option>
+                      <option value="Echo">Echo</option>
+                    </select>
+                  </div>
+                </div>
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+                <div class="warrantyCont">
+                  <label for="warrantyPeriod">Warranty:</label>
+                  <div class="customSelect">
+                    <select class="warrantyPeriod">
+                      <option value="" selected disabled>Select Period</option>
+                      <option value="3 Months">3 Months</option>
+                      <option value="7 Months">7 Months</option>
+                      <option value="1 Year">1 Year</option>
+                    </select>
+                  </div>
+                </div>
 
-// Correct route import
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+                <div class="modelCont">
+                  <label for="model">Model:</label>
+                  <input type="text" class="model" placeholder="Enter Model" required>
+                </div>
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(`✅ Server is running on port ${process.env.PORT || 5000}`);
-    });
-  })
-  .catch(err => {
-    console.error('❌ MongoDB connection failed:', err.message);
-  });
+                <div class="serialCont">
+                  <label for="serialNumber">Serial Num:</label>
+                  <input type="text" class="serialNumber" placeholder="Enter Serial Number" required>
+                </div>
 
+              </div>
 
+              <label for="armature">Armature:</label>
+              <div class="customSelect">
+                <select class="armature">
+                  <option value="" selected disabled>Select Option</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
 
+              <label for="twoCycle">2-Stroke:</label>
+              <div class="customSelect">
+                <select class="twoCycle" onchange="toggleMachineType(this)">
+                  <option value="" selected disabled>Select Option</option>
+                  <option value="YES">YES</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
 
+              <label style="display: none;" for="machineType">Machine Type:</label>
+              <select style="display: none;" class="machineType">
+                <option value="" selected disabled>Select Type</option>
+                <option value="Brush Cutter">Brush Cutter</option>
+                <option value="Chainsaw">Chainsaw</option>
+              </select>
 
+              <!-- Remove button -->
+              <button type="button" onclick="removeRow(this)">Remove</button>
+            </div>
+          </div>
+        </form>
 
+      </div>
+      <!-- Action buttons -->
+      <button type="button" onclick="addMachineRow()">+ Add Another Machine</button>
+      <button type="button" onclick="generatePrintPreview()">Generate Preview</button>
+      <button onclick="saveWarrantyToServer()">Save Warranty</button>
+      <button type="button" onclick="resetForm()">New Warranty</button>
+      <button type="button" onclick="logoutUser()">Logout</button>
+    </div>
+  </div>
 
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</body>
 
-
-
-
-// models/user.js
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  location: { type: String, required: true }
-});
-
-module.exports = mongoose.model('User', userSchema);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</html>

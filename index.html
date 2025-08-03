@@ -13,13 +13,14 @@
   <div class="container">
     <h1>Warranty Sheet</h1>
 
-    <h2>Register (Test Only)</h2>
+
+    <!-- <h2>Register (Test Only)</h2>
     <form id="registerForm">
       <input type="text" id="registerUsername" placeholder="Username" required>
       <input type="password" id="registerPassword" placeholder="Password" required>
       <input type="text" id="registerLocation" placeholder="Location" required>
       <button type="button" onclick="handleRegister()">Register</button>
-    </form>
+    </form> -->
 
 
     <!-- Login Section -->
@@ -31,8 +32,39 @@
       <p id="loginStatus"></p>
     </div>
 
+
+
     <!-- Warranty Section: Hidden by default until login -->
     <div id="warrantySection" style="display: none;">
+
+
+
+      <!-- Warranty Search Section -->
+      <div id="searchSection" style="margin-top: 20px;">
+        <label for="searchDate">Search by Date:</label>
+        <input type="date" id="searchDate" />
+        <button onclick="searchWarrantiesByDate()">Search</button>
+      </div>
+
+      <!-- Search Results Table (Initially Hidden) -->
+      <div id="searchResults" style="display: none; margin-top: 20px;">
+        <h3>Search Results</h3>
+        <table id="warrantyTable" border="1" cellpadding="8">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Machines</th>
+              <th>Reprint</th>
+            </tr>
+          </thead>
+          <tbody></tbody> <!-- 👈 REQUIRED or JavaScript will crash -->
+        </table>
+      </div>
+
+
+
+
       <div class="warrantyForm">
         <!-- Customer Name entered only once -->
         <form id="warrantyForm">
@@ -120,6 +152,7 @@
       <!-- Action buttons -->
       <button type="button" onclick="addMachineRow()">+ Add Another Machine</button>
       <button type="button" onclick="generatePrintPreview()">Generate Preview</button>
+      <button onclick="saveWarrantyToServer()">Save Warranty</button>
       <button type="button" onclick="resetForm()">New Warranty</button>
       <button type="button" onclick="logoutUser()">Logout</button>
     </div>
