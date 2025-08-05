@@ -25,12 +25,19 @@
 
     <!-- Login Section -->
     <div id="loginContainer">
-      <h2>Employee Login</h2>
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button onclick="handleLogin()">Login</button>
-      <p id="loginStatus"></p>
+      <h2>Login</h2>
+      <div class="login-form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username" required>
+      </div>
+      <div class="login-form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+      </div>
+      <button class="login-btn" onclick="handleLogin()">Login</button>
+      <div id="loginStatus"></div>
     </div>
+
 
 
 

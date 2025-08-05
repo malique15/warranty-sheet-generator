@@ -1,170 +1,178 @@
 /* styles.css */
+:root {
+  --primary-color: #ffcc00;
+  --accent-color: #e6b800;
+  --background-color: #fffce6;
+  --primarytext-color: #222;
+  --secondarytext-color: #333;
+  --border-color: #ddd;
+}
+
+html,
 body {
-  font-family: Arial, sans-serif;
+  height: auto;
+  overflow-y: auto;
+}
+
+
+/* Import modern font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #fdfdfb;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #F4F3F2;
+  background-color: #fffce6;
 }
 
-h1 {
-  text-align: left;
+#loginContainer {
+  background-color: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 360px;
+}
+
+#loginContainer h2 {
+  text-align: center;
   color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.login-form-group {
+  margin-bottom: 1.2rem;
+}
+
+.login-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.login-form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border 0.3s;
+}
+
+.login-form-group input:focus {
+  border-color: #ffcc00;
+  outline: none;
+}
+
+button.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button.login-btn:hover {
+  background-color: #e6b800;
+}
+
+#loginStatus {
+  text-align: center;
+  color: red;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+/* Warranty Styling */
+
+body #warrantySection {
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background-color: #f9f9f9;
+  margin: 0px;
+  padding: 10px;
+  color: #333;
+  border-radius: 12px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+#warrantySection h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#warrantySection label {
+  font-weight: 500;
+  margin-top: 10px;
   display: block;
 }
 
-.warrantyForm {
-  width: 90vw;
-  padding: 30px 20px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.warranty-form-row {
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.warranty-form-card {
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.custLabel {
-  display: flex;
-}
-
-label {
-  text-transform: uppercase;
-  margin-right: 10px;
-}
-
-input {
-  background-color: #F4F3F2;
-  border: none;
-}
-
-
-
-
-.row-1 {
-  display: flex;
-  flex: 25%;
-  gap: 47px;
-  margin-top: 36px;
-  align-items: baseline;
-}
-
-.row-1 input {
-  background-color: #F4F3F2;
-  border: none;
-}
-
-.row-1 select {
+#warrantySection input[type="text"],
+select {
   width: 100%;
+  padding: 10px 14px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#warrantySection .warranty-form-row {
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+#warrantySection button {
+  background-color: #FFD700;
+  color: #333;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin: 10px 5px 0 0;
+}
+
+#warrantySection button:hover {
+  background-color: #f3c300;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
 
 .customSelect {
-  display: inline-flex;
-  width: 200px;
+  margin-bottom: 10px;
 }
 
-.customSelect select {
-  appearance: none;
-
-  background-color: #F4F3F2;
-  border: none;
-  font-size: 16px;
-  padding: 5px 30px;
-  border-radius: 0.25rem;
-  color: #000;
-  cursor: pointer;
+.row-1 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 10px;
 }
 
-
-.customSelect::before,
-.customSelect::after {
-  position: absolute;
-  content: "";
-  right: 1rem;
-  pointer-events: none;
-}
-
-.customSelect::before {
-  border-left: var(--size) solid transparent;
-  border-right: var(--size) solid transparent;
-  border-bottom: var(--size) solid black;
-  top: 40%;
-}
-
-.customSelect::after {
-  border-left: var(--size) solid transparent;
-  border-right: var(--size) solid transparent;
-  border-top: var(--size) solid black;
-  top: 55%;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  margin-top: 10px;
-}
-
-input {
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
+footer {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  margin-top: 40px;
 }

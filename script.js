@@ -72,6 +72,8 @@ function addMachineRow() {
   newRow.querySelectorAll('input').forEach(input => input.value = '');
   newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
   document.getElementById('machineForms').appendChild(newRow);
+
+  setTimeout(() => newRow.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
 }
 
 function removeRow(button) {
@@ -258,45 +260,7 @@ async function searchWarranty() {
   }
 }
 
-async function searchWarrantiesByDate() {
-  const dateInput = document.getElementById("searchDate").value;
-  if (!dateInput) {
-    alert("Please select a date");
-    return;
-  }
 
-  const response = await fetch(`http://localhost:5000/api/warranty/search?date=${dateInput}`, {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-
-  const data = await response.json();
-  const tableBody = document.querySelector("#warrantyTable tbody");
-  tableBody.innerHTML = ""; // clear old results
-
-  if (data.length === 0) {
-    alert("No warranties found for that week.");
-    document.getElementById("searchResults").style.display = "none";
-    return;
-  }
-
-  data.forEach(warranty => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${warranty.customerName}</td>
-      <td>${new Date(warranty.createdAt).toLocaleDateString()}</td>
-      <td>${warranty.machines.length}</td>
-      <td><button onclick='reprintWarranty(${JSON.stringify(warranty)})'>Reprint</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
-
-  document.getElementById("searchResults").style.display = "block";
-
-
-
-}
 
 function toggleSearchPanel() {
   const panel = document.getElementById('searchResults');
@@ -394,5 +358,99 @@ function resetForm() {
     container.removeChild(container.lastChild);
   }
 }
+
+async function searchWarrantiesByDate() {
+  const date = document.getElementById('searchDate').value;
+  if (!date) return alert('Please select a date.');
+
+  try {
+    const response = await fetch(`http://localhost:5000/api/warranty/search?date=${date}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    if (!response.ok) throw new Error("Warranty search failed");
+
+    const data = await response.json();
+    openSearchResultsPopup(data.warranties);
+  } catch (err) {
+    console.error("Search failed:", err);
+    alert("Error searching warranties. Check console.");
+  }
+}
+
+function openSearchResultsPopup(results) {
+  const popup = window.open('', '_blank', 'width=800,height=600');
+  let html = `
+    <html>
+    <head>
+      <title>Warranty Search Results</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        button { padding: 5px 10px; }
+      </style>
+    </head>
+    <body>
+      <h1>Warranties Found</h1>
+      <table>
+        <tr>
+          <th>Customer</th>
+          <th>Brand</th>
+          <th>Model</th>
+          <th>Serial</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+  `;
+
+  if (results.length === 0) {
+    html += `<tr><td colspan="6" style="text-align:center;">No warranties found for this date.</td></tr>`;
+  } else {
+    results.forEach(w => {
+      html += `
+        <tr>
+          <td>${w.customerName}</td>
+          <td>${w.brand}</td>
+          <td>${w.model}</td>
+          <td>${w.serialNumber}</td>
+          <td>${new Date(w.createdAt).toLocaleDateString()}</td>
+          <td><button onclick="window.opener.reprintWarranty('${w._id}')">Reprint</button></td>
+        </tr>
+      `;
+    });
+  }
+
+  html += `
+      </table>
+    </body>
+    </html>
+  `;
+
+  popup.document.write(html);
+  popup.document.close();
+}
+
+// This method will be called from the popup
+function reprintWarranty(id) {
+  fetch(`http://localhost:5000/api/warranty/${id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      // Here, you can call a function to regenerate the print preview based on data
+      generatePrintPreviewFromData(data);
+    })
+    .catch(err => {
+      console.error("Reprint failed", err);
+      alert("Could not load warranty for reprint");
+    });
+}
+
 
 
