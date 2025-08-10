@@ -184,7 +184,51 @@ function generatePrintPreview() {
   `);
   printWindow.document.close();
   printWindow.onload = () => printWindow.print();
+
+  saveWarrantyToServer();
 }
+
+async function saveWarrantyToServer() {
+  const custName = document.getElementById("custName").value;
+  const rows = document.querySelectorAll(".warranty-form-row");
+
+  const machineDetails = Array.from(rows).map(row => ({
+    brand: row.querySelector(".brand").value,
+    warrantyPeriod: row.querySelector(".warrantyPeriod").value,
+    model: row.querySelector(".model").value,
+    serialNumber: row.querySelector(".serialNumber").value,
+    armature: row.querySelector(".armature").value,
+    twoCycle: row.querySelector(".twoCycle").value,
+    machineType: row.querySelector(".machineType").value,
+  }));
+
+  const payload = {
+    customerName: custName,
+    machineDetails
+  };
+
+  try {
+    const response = await fetch("http://localhost:5000/api/warranty/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert("✅ Warranty saved successfully.");
+    } else {
+      alert("❌ Error saving warranty: " + result.msg);
+    }
+  } catch (error) {
+    alert("❌ Save failed: " + error.message);
+    console.error(error);
+  }
+}
+
 
 
 async function saveWarrantyToServer() {
@@ -452,5 +496,13 @@ function reprintWarranty(id) {
     });
 }
 
+// This open and closal modal pop up
+function openSearchModal() {
+  document.getElementById('searchModal').style.display = 'block';
+}
+
+function closeSearchModal() {
+  document.getElementById('searchModal').style.display = 'none';
+}
 
 
