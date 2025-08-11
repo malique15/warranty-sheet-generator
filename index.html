@@ -160,19 +160,24 @@
       <button type="button" onclick="addMachineRow()">+ Add Another Machine</button>
       <button type="button" onclick="generatePrintPreview()">Generate Preview</button>
       <button onclick="saveWarrantyToServer()">Save Warranty</button>
-      <button type="button" onclick="resetForm()">New Warranty</button>
+      <button type="button" onclick="resetForm()" id="newWarrantyBtn">New Warranty</button>
       <button type="button" onclick="logoutUser()">Logout</button>
     </div>
   </div>
 
-  <!-- 🔍 Warranty Search Modal -->
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="modal-overlay"></div>
+
+  <!-- Search Results Modal -->
   <div id="searchModal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeSearchModal()">&times;</span>
-      <h2>Search Results</h2>
+      <span class="modal-close" onclick="closeSearchModal()">&times;</span>
+      <h2 id="modalTitle">Warranty Search Results</h2>
+      <p id="warrantyCount" style="margin-bottom: 10px;"></p>
       <div id="searchResultsContainer"></div>
     </div>
   </div>
+
 
 
   <script src="script.js"></script>
