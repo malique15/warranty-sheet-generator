@@ -1,21 +1,20 @@
 const mongoose = require('mongoose');
 
-const warrantySchema = new mongoose.Schema({
-  customerName: { type: String, required: true },
-  machineDetails: [
-    {
-      brand: String,
-      warrantyPeriod: String,
-      model: String,
-      serialNumber: String,
-      armature: String,
-      twoCycle: String,
-      machineType: String
-    }
-  ],
-  createdBy: { type: String, required: true },
-  location: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+const MachineSchema = new mongoose.Schema({
+  brand: String,
+  warrantyPeriod: String,
+  model: String,
+  serialNumber: String,
+  armature: String,
+  twoCycle: String,
+  machineType: String
 });
 
-module.exports = mongoose.model('Warranty', warrantySchema);
+const WarrantySchema = new mongoose.Schema({
+  customerName: { type: String, required: true },
+  machineDetails: [MachineSchema],   // ✅ consistent naming
+  createdBy: String,
+  location: String
+}, { timestamps: true });
+
+module.exports = mongoose.model('Warranty', WarrantySchema);

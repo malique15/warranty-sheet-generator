@@ -70,7 +70,6 @@ function addMachineRow() {
   newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
   document.getElementById('machineForms').appendChild(newRow);
 
-  // Auto scroll to new row
   setTimeout(() => newRow.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
 }
 
@@ -95,16 +94,16 @@ function toggleMachineType(select) {
   }
 }
 
-// Print preview & save
 function generatePrintPreview() {
   const custName = document.getElementById("custName").value;
   const rows = document.querySelectorAll(".warranty-form-row");
 
   let warrantyText = `<h1>Warranty Sheet</h1><p><strong>Customer Name:</strong> ${custName}</p>`;
 
+  // Mandatory warranty rules
   const warrantyLine1 = "This limited warranty lasts for the specified period and begins on the specified start date.";
   const warrantyLine2 = "Machines that are damaged from improper usage that are obvious will not be covered under warranty.";
-  const warrantyLine3 = "Please contact TotalTools repair center ONLY with your receipt as proof of purchase.";
+  const warrantyLine3 = "Please contact TotalTools repair center ONLY with your receipt as proof of purchase to maintain warranty integrity.";
   const warrantyLine4 = "Warranty will be void if the machine is opened by unauthorized persons.";
   const warrantyLine5 = "No diagnostic labor charges for defective warranted parts.";
 
@@ -132,7 +131,12 @@ function generatePrintPreview() {
     `;
 
     if (twoCycle === "YES") {
-      warrantyText += `<p>Two-cycle usage instructions here...</p>`;
+      warrantyText += `<p>⚠️ Use proper 2-cycle oil mixture. Not following voids warranty.</p>`;
+      if (machineType === "Brush Cutter") {
+        warrantyText += `<p>Ensure shaft isn’t bent and body parts aren’t damaged. Not covered by warranty.</p>`;
+      } else if (machineType === "Chainsaw") {
+        warrantyText += `<p>Inspect bar, chain, and covers before purchase. Physical damage excluded.</p>`;
+      }
     }
 
     warrantyText += `
@@ -169,12 +173,11 @@ function generatePrintPreview() {
   saveWarrantyToServer();
 }
 
-// Save warranty to backend
 async function saveWarrantyToServer() {
   const custName = document.getElementById("custName").value;
   const rows = document.querySelectorAll(".warranty-form-row");
 
-  const machineDetails = Array.from(rows).map(row => ({
+  const machines = Array.from(rows).map(row => ({
     brand: row.querySelector(".brand").value,
     warrantyPeriod: row.querySelector(".warrantyPeriod").value,
     model: row.querySelector(".model").value,
@@ -184,115 +187,128 @@ async function saveWarrantyToServer() {
     machineType: row.querySelector(".machineType").value,
   }));
 
+  const payload = {
+    customerName: custName,
+    machines
+  };
+
   try {
     const response = await fetch("http://localhost:5000/api/warranty/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ customerName: custName, machineDetails })
+      body: JSON.stringify(payload)
     });
 
     const result = await response.json();
-    alert(result.msg || "✅ Warranty saved successfully.");
+    if (response.ok) {
+      alert("✅ Warranty saved successfully.");
+    } else {
+      alert("❌ Error saving warranty: " + result.msg);
+    }
   } catch (error) {
     console.error(error);
-    alert("❌ Error saving warranty");
+    alert("❌ Save failed: " + error.message);
   }
 }
 
-// Search warranties (now opens modal)
+// ----------------- SEARCH + MODAL ------------------
+
 async function searchWarrantiesByDate() {
   const date = document.getElementById('searchDate').value;
   if (!date) return alert('Please select a date.');
 
   try {
     const response = await fetch(`http://localhost:5000/api/warranty/search?date=${date}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) throw new Error("Warranty search failed");
-    const warranties = await response.json();
 
-    let html = `<table><tr>
-      <th>Customer</th><th>Brand</th><th>Model</th><th>Serial</th><th>Date</th><th>Action</th>
-    </tr>`;
+    const data = await response.json();
+    openSearchResultsModal(data, date); // pass date correctly
+  } catch (err) {
+    console.error("Search failed:", err);
+    alert("Error searching warranties. Check console.");
+  }
+}
 
-    if (warranties.length === 0) {
-      html += `<tr><td colspan="6" style="text-align:center;">No warranties found</td></tr>`;
-    } else {
-      warranties.forEach(w => {
-        w.machineDetails.forEach(m => {
-          html += `<tr>
+function openSearchResultsModal(warranties, date) {
+  const modal = document.getElementById('searchModal');
+  const overlay = document.getElementById('modalOverlay');
+  const resultsContainer = document.getElementById('searchResultsContainer');
+
+  // ✅ Fix invalid date
+  const displayDate = date ? new Date(date).toLocaleDateString() : "Selected Date";
+
+  document.getElementById('modalTitle').innerText =
+    `Search Results for ${displayDate}`;
+  document.getElementById('warrantyCount').innerText =
+    `Total warranties found: ${warranties.length}`;
+
+  let html = "";
+
+  if (warranties.length === 0) {
+    html = `<p style="color:red;">No warranties found for this date.</p>`;
+  } else {
+    html += `
+      <table border="1" width="100%" style="border-collapse:collapse; margin-top:10px;">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    warranties.forEach(w => {
+      (w.machineDetails || []).forEach(m => {   // ✅ FIX: use machineDetails
+        html += `
+          <tr>
             <td>${w.customerName}</td>
             <td>${m.brand}</td>
             <td>${m.model}</td>
             <td>${m.serialNumber}</td>
             <td>${new Date(w.createdAt).toLocaleDateString()}</td>
-            <td><button onclick='reprintWarrantyFromData(${JSON.stringify(w)})'>Reprint</button></td>
-          </tr>`;
-        });
+            <td><button onclick="reprintWarranty('${w._id}')">Reprint</button></td>
+          </tr>
+        `;
       });
-    }
+    });
 
-    html += `</table>`;
-
-    // Set modal title & count
-    const searchDateFormatted = new Date(date).toLocaleDateString();
-    document.getElementById("modalTitle").innerText = `Warranty Search Results for ${searchDateFormatted}`;
-    document.getElementById("warrantyCount").innerText = `Total Warranties Found: ${warranties.length}`;
-
-    document.getElementById("searchResultsContainer").innerHTML = html;
-    openSearchModal();
-
-  } catch (err) {
-    console.error(err);
-    alert("Error searching warranties.");
+    html += `</tbody></table>`;
   }
+
+  resultsContainer.innerHTML = html;
+
+  modal.style.display = 'block';
+  overlay.style.display = 'block';
 }
-
-
-// Reprint directly from warranty data
-function reprintWarrantyFromData(warranty) {
-  let warrantyText = `<h1>Warranty Sheet</h1><p><strong>Customer Name:</strong> ${warranty.customerName}</p>`;
-  warranty.machineDetails.forEach((m, index) => {
-    warrantyText += `<h2>Machine ${index + 1}</h2><p>${m.brand} - ${m.model}</p>`;
-  });
-
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(`<html><body>${warrantyText}</body></html>`);
-  printWindow.document.close();
-  printWindow.onload = () => printWindow.print();
-}
-
-// Modal controls
-function openSearchModal() {
-  document.getElementById('modalOverlay').style.display = 'block';
-  document.getElementById('searchModal').style.display = 'block';
-}
-
 function closeSearchModal() {
-  document.getElementById('modalOverlay').style.display = 'none';
   document.getElementById('searchModal').style.display = 'none';
+  document.getElementById('modalOverlay').style.display = 'none';
 }
 
+// Also close if overlay is clicked
+document.getElementById('modalOverlay').addEventListener('click', closeSearchModal);
 
-window.resetForm = function () {
-  // Reset form
+
+
+// ----------------- FORM RESET ------------------
+
+function resetForm() {
   document.getElementById('warrantyForm').reset();
-
-  // Keep only one machine form row
   const container = document.getElementById('machineForms');
   while (container.children.length > 1) {
     container.removeChild(container.lastChild);
   }
-
-  // Scroll smoothly to top so the form is visible
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-};
-
-
+}

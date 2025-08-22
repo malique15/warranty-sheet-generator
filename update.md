@@ -1,11 +1,6 @@
 Fixes: 
 
 
-Modal Change -
-Not displaying all saved warranties for a specific day on the modal pop up.
-Modal date is incorrect
-
-
 Form -
 Need to remove input history.
 
@@ -28,6 +23,33 @@ Feature:
 
 Modal-
 Need a button that skip forward and backward through calendar days.
+
+
+this app is a private app i want to be able to manage who has a login for this program
+I will create a login for a user with a standard login username that is Initial of first name and full last name. and temporary password
+after user enters given login details they should be prompted to create a new password. After this the users account should be permanent.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
